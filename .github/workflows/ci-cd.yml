@@ -22,8 +22,8 @@ jobs:
 
     - name: Build and push convert service image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest ./convert_service
-        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest
+        sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest ./convert_service
+        sudo docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest
 
     - name: Build and push rates service image
       run: |
