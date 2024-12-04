@@ -3,7 +3,6 @@ FROM node:18-alpine
 WORKDIR .
 
 COPY . .
-COPY privkey.pem fullchain.pem .
 
 RUN npm install express axios cors
 
