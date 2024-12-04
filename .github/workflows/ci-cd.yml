@@ -20,17 +20,12 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push frontend image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-frontend:latest ./frontend
-        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-frontend:latest
-
     - name: Build and push convert service image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-convert-service:latest ./convert-service
-        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-convert-service:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest ./convert_service
+        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-convert:latest
 
     - name: Build and push rates service image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-rates-service:latest ./rates-service
-        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-rates-service:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/convertidor-rates:latest ./rates_service
+        docker push ${{ secrets.DOCKER_USERNAME }}/convertidor-rates:latest
