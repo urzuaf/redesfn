@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  web:
+    image: nginx:latest
+    container_name: convertidor-web
+    volumes:
+      - ./html:/usr/share/nginx/html
+    po

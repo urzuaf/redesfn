@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: nginx:latest
+    #container_name: convertidor-web
+    volumes:
+      - ./html:/usr/share/nginx/html
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    networks:
+      - internal
+
+  convert:
+    build:
+      context: ./convert_service
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    networks:
+      - internal
+
+  rates:
+    build:
+      context: ./rates_service
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    networks:
+      - internal
+
+  haproxy:
+    image: haproxy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./cert.pem:/usr/local/etc/haproxy/certs/cert.pem:ro
+    depends_on:
+      - frontend
+      - convert
+      - rates
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

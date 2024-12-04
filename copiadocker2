@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  web:
+    image: nginx:latest
+    #container_name: convertidor-web
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "3000:80"
+    networks:
+      - webnet
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+
+  rates:
+    build:
+      context: ./rates_service # Ruta al directorio del primer servicio
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+
+  convert:
+    build:
+      context: ./convert_service # Ruta al directorio del segundo servicio
+    ports:
+      - "9090:9090"
+    networks:
+      - webnet
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+    environment:
+      - RATES_SERVICE_URL=http://rates:8080 # URL para conectarse al servicio de tasas
+
+  proxy:
+    image: haproxy:latest
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./cert.pem:/usr/local/etc/haproxy/certs/cert.pem:ro
+    depends_on:
+      - web
+      - rates
+      - convert
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
+
+volumes:
+  proxy-data:
+  proxy-letsencrypt:

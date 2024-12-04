@@ -1,0 +1,12 @@
+FROM node:18-alpine
+
+WORKDIR .
+
+COPY . .
+
+RUN npm install express axios cors
+
+EXPOSE 8080
+
+# Comando para iniciar la aplicación
+CMD ["node", "app.js"]

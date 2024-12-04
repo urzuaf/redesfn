@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: nginx:latest
+    volumes:
+      - ./html:/usr/share/nginx/html
+    networks:
+      - internal
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+
+  convert:
+    image: convertidor_convert:latest # Especificar la imagen aqu
+    networks:
+      - internal
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+
+  rates:
+    image: convertidor_rates:latest # Especificar la imagen aquí
+    networks:
+      - internal
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+
+  proxy:
+    image: haproxy:latest
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+    depends_on:
+      - frontend
+      - convert
+      - rates
+    networks:
+      - internal
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./cert.pem:/usr/local/etc/haproxy/certs/cert.pem:ro
+
+networks:
+  internal:
+    driver: overlay
