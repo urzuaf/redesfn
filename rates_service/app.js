@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   const filePath = './messages.json';  
-    res.status(200).send('servidor activo');
+    res.status(200).send('servidor activo123');
 });
 
 async function getExchangeData() {
